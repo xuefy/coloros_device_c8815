@@ -1,0 +1,90 @@
+ .../android/systemui/shortcuts/AllItemPanel.smali  |    4 ----
+ .../statusbar/policy/NetworkController.smali       |   20 ++++++++++++++------
+ 2 files changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/smali/com/android/systemui/shortcuts/AllItemPanel.smali b/smali/com/android/systemui/shortcuts/AllItemPanel.smali
+index 459ff5d..4d61de9 100644
+--- a/smali/com/android/systemui/shortcuts/AllItemPanel.smali
++++ b/smali/com/android/systemui/shortcuts/AllItemPanel.smali
+@@ -4165,11 +4165,7 @@
+ 
+     move-result v3
+ 
+-    if-nez v3, :cond_2
+-
+     .line 3316
+-    if-eqz v2, :cond_2
+-
+     const-string v3, "flashlight"
+ 
+     invoke-virtual {v2}, Lcom/android/systemui/shortcuts/StatusItem;->getName()Ljava/lang/String;
+diff --git a/smali/com/android/systemui/statusbar/policy/NetworkController.smali b/smali/com/android/systemui/statusbar/policy/NetworkController.smali
+index 09013b0..b4dd068 100644
+--- a/smali/com/android/systemui/statusbar/policy/NetworkController.smali
++++ b/smali/com/android/systemui/statusbar/policy/NetworkController.smali
+@@ -970,11 +970,13 @@
+     .line 2556
+     sget-boolean v2, Lcom/oppo/common/featureoption/FeatureOption;->PLATFORM_QCOM:Z
+ 
++    const/4 v2, 0x1
++
+     if-eqz v2, :cond_0
+ 
+     iget-object v2, p0, Lcom/android/systemui/statusbar/policy/NetworkController;->mSignalStrength:Landroid/telephony/SignalStrength;
+ 
+-    invoke-virtual {v2}, Landroid/telephony/SignalStrength;->getTdScdmaDbm()I
++    invoke-virtual {v2}, Landroid/telephony/SignalStrength;->getCdmaDbm()I
+ 
+     move-result v2
+ 
+@@ -4082,7 +4084,9 @@
+ 
+     .line 629
+     :cond_7
+-    invoke-direct {p0}, Lcom/android/systemui/statusbar/policy/NetworkController;->getGsmLevel()I
++    iget-object v2, p0, Lcom/android/systemui/statusbar/policy/NetworkController;->mSignalStrength:Landroid/telephony/SignalStrength;
++
++    invoke-virtual {v2}, Landroid/telephony/SignalStrength;->getLevel()I
+ 
+     move-result v2
+ 
+@@ -4288,7 +4292,7 @@
+     .line 664
+     iget-object v8, p0, Lcom/android/systemui/statusbar/policy/NetworkController;->mSignalStrength:Landroid/telephony/SignalStrength;
+ 
+-    invoke-virtual {v8}, Landroid/telephony/SignalStrength;->getCdmaLevel()I
++    invoke-virtual {v8}, Landroid/telephony/SignalStrength;->getLevel()I
+ 
+     move-result v2
+ 
+@@ -4322,7 +4326,7 @@
+ 
+     iget-object v10, p0, Lcom/android/systemui/statusbar/policy/NetworkController;->mSignalStrength:Landroid/telephony/SignalStrength;
+ 
+-    invoke-virtual {v10}, Landroid/telephony/SignalStrength;->getCdmaLevel()I
++    invoke-virtual {v10}, Landroid/telephony/SignalStrength;->getLevel()I
+ 
+     move-result v10
+ 
+@@ -4523,7 +4527,9 @@
+     if-eqz v8, :cond_10
+ 
+     .line 674
+-    invoke-direct {p0}, Lcom/android/systemui/statusbar/policy/NetworkController;->get3GLevel()I
++    iget-object v2, p0, Lcom/android/systemui/statusbar/policy/NetworkController;->mSignalStrength:Landroid/telephony/SignalStrength;
++
++    invoke-virtual {v2}, Landroid/telephony/SignalStrength;->getLevel()I
+ 
+     move-result v2
+ 
+@@ -4535,7 +4541,9 @@
+     .line 676
+     .end local v2    # "iconLevel":I
+     :cond_10
+-    invoke-direct {p0}, Lcom/android/systemui/statusbar/policy/NetworkController;->getGsmLevel()I
++    iget-object v2, p0, Lcom/android/systemui/statusbar/policy/NetworkController;->mSignalStrength:Landroid/telephony/SignalStrength;
++
++    invoke-virtual {v2}, Landroid/telephony/SignalStrength;->getLevel()I
+ 
+     move-result v2
+ 

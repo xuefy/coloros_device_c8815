@@ -1,0 +1,180 @@
+ .../server/wm/OppoWindowManagerService$1.smali     |    2 +-
+ .../server/wm/OppoWindowManagerService.smali       |    5 +-
+ .../android/server/wm/OppoWindowStateHelper.smali  |  126 ++++++++++++++++++++
+ 3 files changed, 130 insertions(+), 3 deletions(-)
+
+diff --git a/smali/com/android/server/wm/OppoWindowManagerService$1.smali b/smali/com/android/server/wm/OppoWindowManagerService$1.smali
+index e494db9..4e1708f 100644
+--- a/smali/com/android/server/wm/OppoWindowManagerService$1.smali
++++ b/smali/com/android/server/wm/OppoWindowManagerService$1.smali
+@@ -8,7 +8,7 @@
+ 
+ # annotations
+ .annotation system Ldalvik/annotation/EnclosingMethod;
+-    value = Lcom/android/server/wm/OppoWindowManagerService;-><init>(Landroid/content/Context;Lcom/android/server/power/PowerManagerService;Lcom/android/server/display/DisplayManagerService;Lcom/android/server/input/InputManagerService;Landroid/os/Handler;ZZZ)V
++    value = Lcom/android/server/wm/OppoWindowManagerService;-><init>(Landroid/content/Context;Lcom/android/server/power/PowerManagerService;Lcom/android/server/display/DisplayManagerService;Lcom/android/server/input/InputManagerService;Lcom/android/internal/os/IDeviceHandler;Landroid/os/Handler;ZZZ)V
+ .end annotation
+ 
+ .annotation system Ldalvik/annotation/InnerClass;
+diff --git a/smali/com/android/server/wm/OppoWindowManagerService.smali b/smali/com/android/server/wm/OppoWindowManagerService.smali
+index 6557ea5..db2ae8e 100644
+--- a/smali/com/android/server/wm/OppoWindowManagerService.smali
++++ b/smali/com/android/server/wm/OppoWindowManagerService.smali
+@@ -27,12 +27,13 @@
+ 
+ 
+ # direct methods
+-.method public constructor <init>(Landroid/content/Context;Lcom/android/server/power/PowerManagerService;Lcom/android/server/display/DisplayManagerService;Lcom/android/server/input/InputManagerService;Landroid/os/Handler;ZZZ)V
++.method constructor <init>(Landroid/content/Context;Lcom/android/server/power/PowerManagerService;Lcom/android/server/display/DisplayManagerService;Lcom/android/server/input/InputManagerService;Lcom/android/internal/os/IDeviceHandler;Landroid/os/Handler;ZZZ)V
+     .locals 1
+     .parameter "context"
+     .parameter "pm"
+     .parameter "displayManager"
+     .parameter "inputManager"
++    .parameter "device"
+     .parameter "uiHandler"
+     .parameter "haveInputMethods"
+     .parameter "showBootMsgs"
+@@ -40,7 +41,7 @@
+ 
+     .prologue
+     .line 75
+-    invoke-direct/range {p0 .. p8}, Lcom/android/server/wm/WindowManagerService;-><init>(Landroid/content/Context;Lcom/android/server/power/PowerManagerService;Lcom/android/server/display/DisplayManagerService;Lcom/android/server/input/InputManagerService;Landroid/os/Handler;ZZZ)V
++    invoke-direct/range {p0 .. p9}, Lcom/android/server/wm/WindowManagerService;-><init>(Landroid/content/Context;Lcom/android/server/power/PowerManagerService;Lcom/android/server/display/DisplayManagerService;Lcom/android/server/input/InputManagerService;Lcom/android/internal/os/IDeviceHandler;Landroid/os/Handler;ZZZ)V
+ 
+     .line 61
+     new-instance v0, Ljava/lang/Object;
+diff --git a/smali/com/android/server/wm/OppoWindowStateHelper.smali b/smali/com/android/server/wm/OppoWindowStateHelper.smali
+index 025e90d..b63d1dc 100644
+--- a/smali/com/android/server/wm/OppoWindowStateHelper.smali
++++ b/smali/com/android/server/wm/OppoWindowStateHelper.smali
+@@ -139,3 +139,129 @@
+     :cond_0
+     return p3
+ .end method
++
++.method public static hideLwExtr(Landroid/view/WindowManager$LayoutParams;Lcom/android/server/wm/WindowList;ZZ)Z
++    .locals 4
++    .parameter "mAttrs"
++    .parameter
++    .parameter "doAnimation"
++    .parameter "requestAnim"
++    .annotation system Ldalvik/annotation/Signature;
++        value = {
++            "(",
++            "Landroid/view/WindowManager$LayoutParams;",
++            "Lcom/android/server/wm/WindowList",
++            "<",
++            "Lcom/android/server/wm/WindowState;",
++            ">;ZZ)Z"
++        }
++    .end annotation
++
++    .prologue
++    .line 55
++    .local p1, mChildWindows:Lcom/android/server/wm/WindowList;,"Lcom/android/server/wm/WindowList<Lcom/android/server/wm/WindowState;>;"
++    iget v2, p0, Landroid/view/WindowManager$LayoutParams;->type:I
++
++    const/16 v3, 0xa10
++
++    if-ne v2, v3, :cond_0
++
++    .line 56
++    const/4 p3, 0x0
++
++    .line 58
++    invoke-virtual {p1}, Lcom/android/server/wm/WindowList;->size()I
++
++    move-result v0
++
++    .line 59
++    .local v0, N:I
++    const/4 v1, 0x0
++
++    .local v1, i:I
++    :goto_0
++    if-ge v1, v0, :cond_0
++
++    .line 60
++    invoke-virtual {p1, v1}, Lcom/android/server/wm/WindowList;->get(I)Ljava/lang/Object;
++
++    move-result-object v2
++
++    check-cast v2, Lcom/android/server/wm/WindowState;
++
++    invoke-virtual {v2, p2, p3}, Lcom/android/server/wm/WindowState;->hideLw(ZZ)Z
++
++    .line 59
++    add-int/lit8 v1, v1, 0x1
++
++    goto :goto_0
++
++    .line 64
++    .end local v0           #N:I
++    .end local v1           #i:I
++    :cond_0
++    return p3
++.end method
++
++.method public static showLwExtr(Landroid/view/WindowManager$LayoutParams;Lcom/android/server/wm/WindowList;ZZ)Z
++    .locals 4
++    .parameter "mAttrs"
++    .parameter
++    .parameter "doAnimation"
++    .parameter "requestAnim"
++    .annotation system Ldalvik/annotation/Signature;
++        value = {
++            "(",
++            "Landroid/view/WindowManager$LayoutParams;",
++            "Lcom/android/server/wm/WindowList",
++            "<",
++            "Lcom/android/server/wm/WindowState;",
++            ">;ZZ)Z"
++        }
++    .end annotation
++
++    .prologue
++    .line 71
++    .local p1, mChildWindows:Lcom/android/server/wm/WindowList;,"Lcom/android/server/wm/WindowList<Lcom/android/server/wm/WindowState;>;"
++    iget v2, p0, Landroid/view/WindowManager$LayoutParams;->type:I
++
++    const/16 v3, 0xa10
++
++    if-ne v2, v3, :cond_0
++
++    .line 72
++    const/4 p3, 0x0
++
++    .line 74
++    invoke-virtual {p1}, Lcom/android/server/wm/WindowList;->size()I
++
++    move-result v0
++
++    .line 75
++    .local v0, N:I
++    const/4 v1, 0x0
++
++    .local v1, i:I
++    :goto_0
++    if-ge v1, v0, :cond_0
++
++    .line 76
++    invoke-virtual {p1, v1}, Lcom/android/server/wm/WindowList;->get(I)Ljava/lang/Object;
++
++    move-result-object v2
++
++    check-cast v2, Lcom/android/server/wm/WindowState;
++
++    invoke-virtual {v2, p2, p3}, Lcom/android/server/wm/WindowState;->showLw(ZZ)Z
++
++    .line 75
++    add-int/lit8 v1, v1, 0x1
++
++    goto :goto_0
++
++    .line 79
++    .end local v0           #N:I
++    .end local v1           #i:I
++    :cond_0
++    return p3
++.end method

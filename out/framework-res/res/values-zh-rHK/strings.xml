@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="android_upgrading_title">ColorOS 正在升級...</string>
+    <string name="android_upgrading_apk">正在最佳化第 %1$d 個應用程式 (共 %2$d 個)</string>
+    <string name="android_upgrading_starting_apps">正在啟動應用程式</string>
+    <string name="android_upgrading_complete">啟動完成</string>
+</resources>

@@ -1,0 +1,42 @@
+MoKee OpenSource
+===============
+
+Visit http://github.com/MoKee for full changelogs and git access.
+
+Visit http://review.mfunz.com for our Gerrit instance.
+
+Visit http://bbs.mfunz.com for talk about MoKee OpenSource.
+
+Visit http://www.mfunz.com for our home page.
+
+CHANGELOG (notable new features)
+---------
+
+### 42.2.0
+* Common: Android 4.2.2 (Google)
+* Common: cLock Lockscreen and Homescreen Widget
+* Common: Theme Engine Support
+* Common: Customize Navigation Bar (on devices without hardware keys)
+* Common: Customize Notification Light
+* Common: Display Battery Light
+* Common: Profiles with NFC support
+* Common: Customize Screen Rotation
+* Common: Notification Power Widgets
+* Common: DSP Manager
+* Common: Volume Rocker Wake
+* Common: Performance Settings (I/O Scheduler, CPU Governor, etc)
+* Quick Settings: Panel Customization
+* Quick Settings: Toggle QS panel with horizontal swipe
+* Quick Settings: Split QS actionable area
+* Quick Settings: Added QS Tiles
+* Status Bar: Hide or Show Clock
+* Status Bar: Battery Percentage and Circle Battery
+* Status Bar: Show Notification Counts
+* Status Bar: Signal Status Customization
+* Status Bar: Set Date and Time as buttons (with longpress actions)
+* MoKeeLauncher: Launcher Updates
+* Lockscreen: Slider Shortcuts
+* Lockscreen: Maximize Widgets on Wake
+
+### 41.2.0
+* Common: Android 4.1.2 (Google)

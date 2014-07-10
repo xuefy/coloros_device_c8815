@@ -1,0 +1,256 @@
+ AndroidManifest.xml                                |    5 -
+ res/xml/cdma_call_options.xml                      |    9 +++++++++
+ res/xml/cdma_options.xml                           |    6 ++++++
+ smali/com/android/phone/OppoNetworkSettings.smali  |   12 ++++++++----
+ .../phone/Use2GOnlyCheckBoxPreference$1.smali      |    2 +-
+ .../Use2GOnlyCheckBoxPreference$MyHandler.smali    |   14 +++++++++-----
+ .../phone/Use2GOnlyCheckBoxPreference.smali        |   16 ++++++++--------
+ 7 files changed, 41 insertions(+), 23 deletions(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index d043dcb..b92f9cd 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -426,10 +426,5 @@
+                 <action android:name="android.intent.action.cancelDialog"/>
+             </intent-filter>
+         </activity>
+-        <service android:name="BluetoothPhoneService">
+-            <intent-filter>
+-                <action android:name="android.bluetooth.IBluetoothHeadsetPhone"/>
+-            </intent-filter>
+-        </service>
+     </application>
+ </manifest>
+diff --git a/res/xml/cdma_call_options.xml b/res/xml/cdma_call_options.xml
+index 631bf98..371a158 100644
+--- a/res/xml/cdma_call_options.xml
++++ b/res/xml/cdma_call_options.xml
+@@ -3,4 +3,13 @@
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:settings="http://schemas.android.com/apk/res/com.android.phone">
+     <com.android.phone.CdmaVoicePrivacyCheckBoxPreference android:persistent="false" android:title="@string/voice_privacy" android:key="button_voice_privacy_key" android:summary="@string/voice_privacy_summary" />
++    <PreferenceScreen android:persistent="false" android:title="@string/labelCF" android:key="button_cf_expand_key">
++        <intent android:targetPackage="com.android.phone" android:action="android.intent.action.MAIN" android:targetClass="com.android.phone.GsmUmtsCallForwardOptions" />
++    </PreferenceScreen>
++    <PreferenceScreen android:persistent="false" android:title="@string/oppo_lable_call_barring" android:key="button_cb_expand_key" android:enabled="false">
++        <intent android:targetPackage="com.android.phone" android:action="android.intent.action.MAIN" android:targetClass="com.android.phone.OppoCallBarring" />
++    </PreferenceScreen>
++    <PreferenceScreen android:persistent="false" android:title="@string/additional_gsm_call_settings" android:key="button_more_expand_key">
++        <intent android:targetPackage="com.android.phone" android:action="android.intent.action.MAIN" android:targetClass="com.android.phone.GsmUmtsAdditionalCallOptions" />
++    </PreferenceScreen>
+ </PreferenceScreen>
+\ No newline at end of file
+diff --git a/res/xml/cdma_options.xml b/res/xml/cdma_options.xml
+index 19ea1d5..9eced81 100644
+--- a/res/xml/cdma_options.xml
++++ b/res/xml/cdma_options.xml
+@@ -3,4 +3,10 @@
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:settings="http://schemas.android.com/apk/res/com.android.phone">
+     <com.android.phone.CdmaRoamingListPreference android:entries="@array/cdma_system_select_choices" android:title="@string/cdma_system_select_title" android:key="cdma_roaming_mode_key" android:summary="@string/cdma_system_select_summary" android:dialogTitle="@string/cdma_system_select_dialogtitle" android:entryValues="@array/cdma_system_select_values" />
++    <PreferenceScreen android:persistent="false" android:title="@string/apn_settings" android:key="button_apn_key">
++        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.ApnSettings" />
++    </PreferenceScreen>
++    <PreferenceScreen android:persistent="false" android:title="@string/networks" android:key="button_carrier_sel_key" android:summary="@string/sum_carrier_select">
++        <intent android:targetPackage="com.android.phone" android:action="android.intent.action.MAIN" android:targetClass="com.android.phone.NetworkSetting" />
++    </PreferenceScreen>
+ </PreferenceScreen>
+\ No newline at end of file
+diff --git a/smali/com/android/phone/OppoNetworkSettings.smali b/smali/com/android/phone/OppoNetworkSettings.smali
+index 405221a..c8129af 100644
+--- a/smali/com/android/phone/OppoNetworkSettings.smali
++++ b/smali/com/android/phone/OppoNetworkSettings.smali
+@@ -707,7 +707,7 @@
+ .end method
+ 
+ .method protected onCreate(Landroid/os/Bundle;)V
+-    .locals 9
++    .locals 10
+     .param p1, "icicle"    # Landroid/os/Bundle;
+ 
+     .prologue
+@@ -715,6 +715,8 @@
+ 
+     const/4 v7, 0x0
+ 
++    const/4 v9, 0x2
++
+     .line 287
+     invoke-super {p0, p1}, Landroid/preference/PreferenceActivity;->onCreate(Landroid/os/Bundle;)V
+ 
+@@ -860,7 +862,7 @@
+ 
+     move-result v5
+ 
+-    if-eq v5, v6, :cond_4
++    if-eq v5, v9, :cond_4
+ 
+     .line 327
+     iget-boolean v5, p0, Lcom/android/phone/OppoNetworkSettings;->is3GVisiable:Z
+@@ -1972,7 +1974,7 @@
+ .end method
+ 
+ .method protected onResume()V
+-    .locals 8
++    .locals 9
+ 
+     .prologue
+     const v7, 0x7f0c01f9
+@@ -1981,6 +1983,8 @@
+ 
+     const/4 v5, 0x0
+ 
++    const/4 v8, 0x2
++
+     .line 465
+     invoke-super {p0}, Landroid/preference/PreferenceActivity;->onResume()V
+ 
+@@ -2084,7 +2088,7 @@
+ 
+     move-result v3
+ 
+-    if-eq v3, v4, :cond_3
++    if-eq v3, v8, :cond_3
+ 
+     .line 508
+     iget-boolean v3, p0, Lcom/android/phone/OppoNetworkSettings;->is3GVisiable:Z
+diff --git a/smali/com/android/phone/Use2GOnlyCheckBoxPreference$1.smali b/smali/com/android/phone/Use2GOnlyCheckBoxPreference$1.smali
+index af88b90..72d98a6 100644
+--- a/smali/com/android/phone/Use2GOnlyCheckBoxPreference$1.smali
++++ b/smali/com/android/phone/Use2GOnlyCheckBoxPreference$1.smali
+@@ -40,7 +40,7 @@
+     .locals 5
+ 
+     .prologue
+-    const/4 v4, 0x0
++    const/4 v4, 0x4
+ 
+     .line 127
+     iget-object v0, p0, Lcom/android/phone/Use2GOnlyCheckBoxPreference$1;->this$0:Lcom/android/phone/Use2GOnlyCheckBoxPreference;
+diff --git a/smali/com/android/phone/Use2GOnlyCheckBoxPreference$MyHandler.smali b/smali/com/android/phone/Use2GOnlyCheckBoxPreference$MyHandler.smali
+index 7172aa6..3bcb459 100644
+--- a/smali/com/android/phone/Use2GOnlyCheckBoxPreference$MyHandler.smali
++++ b/smali/com/android/phone/Use2GOnlyCheckBoxPreference$MyHandler.smali
+@@ -50,10 +50,12 @@
+ .end method
+ 
+ .method private handleGetPreferredNetworkTypeResponse(Landroid/os/Message;)V
+-    .locals 7
++    .locals 8
+     .param p1, "msg"    # Landroid/os/Message;
+ 
+     .prologue
++    const/4 v7, 0x2
++
+     const/4 v6, 0x1
+ 
+     const/4 v5, 0x0
+@@ -172,7 +174,7 @@
+ 
+     move-result v2
+ 
+-    if-ne v2, v6, :cond_0
++    if-ne v2, v7, :cond_0
+ 
+     iget-object v2, p0, Lcom/android/phone/Use2GOnlyCheckBoxPreference$MyHandler;->this$0:Lcom/android/phone/Use2GOnlyCheckBoxPreference;
+ 
+@@ -263,10 +265,12 @@
+ .end method
+ 
+ .method private handleSetPreferredNetworkTypeResponse(Landroid/os/Message;)V
+-    .locals 7
++    .locals 8
+     .param p1, "msg"    # Landroid/os/Message;
+ 
+     .prologue
++    const/4 v7, 0x2
++
+     const/4 v6, 0x1
+ 
+     const/4 v5, 0x0
+@@ -417,7 +421,7 @@
+ 
+     move-result v2
+ 
+-    if-ne v2, v6, :cond_1
++    if-ne v2, v7, :cond_1
+ 
+     iget-object v2, p0, Lcom/android/phone/Use2GOnlyCheckBoxPreference$MyHandler;->this$0:Lcom/android/phone/Use2GOnlyCheckBoxPreference;
+ 
+@@ -506,7 +510,7 @@
+ 
+     .line 205
+     :pswitch_data_0
+-    .packed-switch 0x0
++    .packed-switch 0x4
+         :pswitch_0
+         :pswitch_1
+     .end packed-switch
+diff --git a/smali/com/android/phone/Use2GOnlyCheckBoxPreference.smali b/smali/com/android/phone/Use2GOnlyCheckBoxPreference.smali
+index d1cef8f..14c7ddc 100644
+--- a/smali/com/android/phone/Use2GOnlyCheckBoxPreference.smali
++++ b/smali/com/android/phone/Use2GOnlyCheckBoxPreference.smali
+@@ -100,7 +100,7 @@
+ 
+     iget-object v1, p0, Lcom/android/phone/Use2GOnlyCheckBoxPreference;->mHandler:Lcom/android/phone/Use2GOnlyCheckBoxPreference$MyHandler;
+ 
+-    const/4 v2, 0x0
++    const/4 v2, 0x4
+ 
+     invoke-virtual {v1, v2}, Lcom/android/phone/Use2GOnlyCheckBoxPreference$MyHandler;->obtainMessage(I)Landroid/os/Message;
+ 
+@@ -248,14 +248,14 @@
+     .param p1, "isChecked"    # Z
+ 
+     .prologue
+-    const/4 v6, 0x2
++    const/4 v6, 0x6
+ 
+-    const/4 v2, 0x1
++    const/4 v2, 0x5
+ 
+     .line 107
+     if-eqz p1, :cond_0
+ 
+-    const/4 v0, 0x0
++    const/4 v0, 0x4
+ 
+     .line 110
+     .local v0, "destNetworkMode":I
+@@ -379,7 +379,7 @@
+     .line 183
+     if-eqz p1, :cond_0
+ 
+-    const/4 v0, 0x3
++    const/4 v0, 0x4
+ 
+     if-eq p1, v0, :cond_0
+ 
+@@ -387,7 +387,7 @@
+ 
+     if-eq p1, v0, :cond_0
+ 
+-    const/4 v0, 0x7
++    const/4 v0, 0x6
+ 
+     if-ne p1, v0, :cond_1
+ 
+@@ -453,7 +453,7 @@
+ 
+     iget-object v1, p0, Lcom/android/phone/Use2GOnlyCheckBoxPreference;->mHandler:Lcom/android/phone/Use2GOnlyCheckBoxPreference$MyHandler;
+ 
+-    const/4 v2, 0x0
++    const/4 v2, 0x4
+ 
+     invoke-virtual {v1, v2}, Lcom/android/phone/Use2GOnlyCheckBoxPreference$MyHandler;->obtainMessage(I)Landroid/os/Message;
+ 
+@@ -482,7 +482,7 @@
+ 
+     const-string v2, "preferred_network_mode"
+ 
+-    const/4 v3, 0x0
++    const/4 v3, 0x4
+ 
+     invoke-static {v1, v2, v3}, Landroid/provider/Settings$Secure;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
+ 
